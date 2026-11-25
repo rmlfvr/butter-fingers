@@ -60,17 +60,42 @@
   #sceneWrap{flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:6px;}
   #scene{width:100%; height:100%;}
   #errBar{display:none; position:fixed; top:0; left:0; right:0; background:#c0392b; color:#fff; padding:8px 14px; font:13px monospace; z-index:99;}
+  #startScreen{position:fixed; inset:0; z-index:100; display:grid; place-items:center; padding:24px; overflow:auto;
+               color:#F6F6F6; text-align:center; cursor:pointer;
+               background:radial-gradient(ellipse at 92% 100%, rgba(166,112,191,.72), transparent 38%),
+                          radial-gradient(ellipse at 12% 0%, rgba(27,75,154,.8), transparent 48%),
+                          linear-gradient(145deg, #10275D, #151F6D 55%, #30265D);}
+  #startScreen[hidden]{display:none;}
+  #startScreen::before{content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
+                       background:repeating-linear-gradient(35deg, transparent 0 17%, rgba(255,255,255,.07) 17.1% 17.3%, transparent 17.4% 24%);}
+  #startScreen:focus-visible{outline:4px solid #E8C547; outline-offset:-8px;}
+  .startContent{position:relative; display:flex; flex-direction:column; align-items:center; gap:22px; width:min(100%, 1000px);}
+  .startLogo{width:170px; height:auto;}
+  .startTitle{font-size:clamp(36px, 7vw, 76px); font-weight:400; line-height:1.1;}
+  .startSubtitle{font-size:clamp(13px, 2.5vw, 26px); letter-spacing:.08em;}
+  .startPlay{display:grid; place-items:center; width:min(320px, 80vw); min-height:66px; margin-top:34px;
+             border-radius:6px; background:#F6F6F6; color:#151F6D; font-size:29px; font-weight:700; letter-spacing:.08em;}
+  .startPrompt{font-size:12px; letter-spacing:.12em; opacity:.8;}
   @media (max-width:900px){ main{flex-direction:column; overflow-y:auto;} body{overflow:auto; height:auto;} #controls{width:100%; min-width:0;} #viz{height:110vh;} }
 </style>
 </head>
 <body>
+<div id="startScreen" role="button" tabindex="0" aria-label="Start the game: A Match Made in Vegas">
+  <div class="startContent">
+    <svg class="startLogo" viewBox="0 0 160 39" aria-hidden="true"><use href="#hyattPath" fill="#F6F6F6"/></svg>
+    <span class="startTitle" role="heading" aria-level="1">A Match Made in Vegas</span>
+    <span class="startSubtitle">A MINI-GAME TO MODEL YOUR NEXT PROJECT LIVE</span>
+    <span class="startPlay">PLAY</span>
+    <span class="startPrompt">CLICK ANYWHERE TO BEGIN</span>
+  </div>
+</div>
 <div id="errBar"></div>
 <header>
   <svg width="110" height="27" viewBox="0 0 160 39" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Hyatt">
     <use href="#hyattPath" fill="#151F6D"/>
   </svg>
-  <h1>The Hotel Brand Recommendation Engine</h1>
-  <span class="tag">Name the site, set your sliders, watch the concept take shape and see which Hyatt brand it becomes.</span>
+  <h1>Match Made in Vegas: The Hotel Brand Recommendation Engine</h1>
+  <span class="tag">Name the site, set your sliders, watch the model take shape and see which Hyatt brand it becomes.</span>
 </header>
 <main>
   <section id="controls">
@@ -521,6 +546,12 @@
                                                                   const txt = `${l.project} | ${l.asset}, ${l.keys} keys, ${l.service}, ${l.chainscale} | Best fit: ${l.topBrands} (${l.matchingBrands} matching)`;   
                                                                   if(navigator.clipboard && navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=> $('saveMsg').textContent = 'Summary copied.').catch(()=> $('saveMsg').textContent = txt);   } 
                                                                   else {$('saveMsg').textContent = txt;   } });  
+                                                                  const startScreen = $('startScreen');
+                                                                  function startGame(){ startScreen.hidden = true; }
+                                                                  startScreen.addEventListener('click', startGame);
+                                                                  startScreen.addEventListener('keydown', e => {
+                                                                    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); startGame(); }
+                                                                  });
                                                                   try { updateTexts(); tick(); } catch(e){   const b = $('errBar'); if(b){ b.style.display='block'; b.textContent = 'Init error: ' + e.message; }   
                                                                   throw e; } 
                                                                   </script>
